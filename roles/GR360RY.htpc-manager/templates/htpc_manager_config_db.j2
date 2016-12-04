@@ -1,0 +1,136 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE setting (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    key TEXT,
+    val TEXT
+);
+INSERT INTO "setting" VALUES(NULL,'git_path','git');
+{# Kodi Configuration #}
+{% if kodi_client_enabled is defined and kodi_client_enabled %}
+INSERT INTO "setting" VALUES(NULL,'kodi_current_server','1');
+INSERT INTO "setting" VALUES(NULL,'kodi_enable','on');
+INSERT INTO "setting" VALUES(NULL,'kodi_name','Kodi');
+INSERT INTO "setting" VALUES(NULL,'kodi_hide_watched','0');
+INSERT INTO "setting" VALUES(NULL,'kodi_enable_pvr','0');
+{% endif %}
+{# CouchPotato Configuration #}
+{% if couchpotato_enabled is defined and couchpotato_enabled and couchpotato_host == ansible_default_ipv4.address and htpc_resolving == 'zeroconf' %}
+INSERT INTO "setting" VALUES(NULL,'couchpotato_host','{{ ansible_hostname }}.local');
+{% elif couchpotato_enabled is defined and couchpotato_enabled and couchpotato_host == ansible_default_ipv4.address and htpc_resolving == 'hostname' %}
+INSERT INTO "setting" VALUES(NULL,'couchpotato_host','{{ ansible_hostname }}');
+{% elif couchpotato_enabled is defined and couchpotato_enabled and couchpotato_host == ansible_default_ipv4.address and htpc_resolving == 'staticip' %}
+INSERT INTO "setting" VALUES(NULL,'couchpotato_host','{{ ansible_default_ipv4.address }}');
+{% elif couchpotato_enabled is defined and couchpotato_enabled and couchpotato_host != ansible_default_ipv4.address %}
+INSERT INTO "setting" VALUES(NULL,'couchpotato_host','{{ couchpotato_host }}');
+{% endif %}
+{% if couchpotato_enabled is defined and couchpotato_enabled %}
+INSERT INTO "setting" VALUES(NULL,'couchpotato_basepath','/');
+INSERT INTO "setting" VALUES(NULL,'couchpotato_apikey','{{ couchpotato_apikey }}');
+INSERT INTO "setting" VALUES(NULL,'couchpotato_ssl','0');
+INSERT INTO "setting" VALUES(NULL,'couchpotato_port','5050');
+INSERT INTO "setting" VALUES(NULL,'couchpotato_name','CouchPotato');
+INSERT INTO "setting" VALUES(NULL,'couchpotato_enable','on');
+{% endif %}
+{# Deluge Configuration #}
+{% if deluge_enabled is defined and deluge_enabled and deluged_host == ansible_default_ipv4.address and htpc_resolving == 'zeroconf' %}
+INSERT INTO "setting" VALUES(NULL,'deluge_host','{{ ansible_hostname }}.local');
+{% elif deluge_enabled is defined and deluge_enabled and deluged_host == ansible_default_ipv4.address and htpc_resolving == 'hostname' %}
+INSERT INTO "setting" VALUES(NULL,'deluge_host','{{ ansible_hostname }}');
+{% elif deluge_enabled is defined and deluge_enabled and deluged_host == ansible_default_ipv4.address and htpc_resolving == 'staticip' %}
+INSERT INTO "setting" VALUES(NULL,'deluge_host','{{ ansible_default_ipv4.address }}');
+{% elif deluged_host is defined and deluged_host != ansible_default_ipv4.address %}
+INSERT INTO "setting" VALUES(NULL,'deluge_host','{{ deluged_host }}');
+{% endif %}
+{% if deluge_enabled is defined and deluge_enabled %}
+INSERT INTO "setting" VALUES(NULL,'deluge_enable','on');
+INSERT INTO "setting" VALUES(NULL,'deluge_password','deluge');
+INSERT INTO "setting" VALUES(NULL,'deluge_port','8112');
+INSERT INTO "setting" VALUES(NULL,'deluge_basepath','');
+INSERT INTO "setting" VALUES(NULL,'deluge_name','Deluge');
+INSERT INTO "setting" VALUES(NULL,'deluge_ssl','0');
+{% endif %}
+{# SickRage Configuration #}
+{% if sickbeard_enabled is defined and sickbeard_enabled and sickbeard_host == ansible_default_ipv4.address and htpc_resolving == 'zeroconf' %}
+INSERT INTO "setting" VALUES(NULL,'sickbeard_host','{{ ansible_hostname }}.local');
+{% elif sickbeard_enabled is defined and sickbeard_enabled and sickbeard_host == ansible_default_ipv4.address and htpc_resolving == 'hostname' %}
+INSERT INTO "setting" VALUES(NULL,'sickbeard_host','{{ ansible_hostname }}');
+{% elif sickbeard_enabled is defined and sickbeard_enabled and sickbeard_host == ansible_default_ipv4.address and htpc_resolving == 'staticip' %}
+INSERT INTO "setting" VALUES(NULL,'sickbeard_host','{{ ansible_default_ipv4.address }}');
+{% elif sickbeard_enabled is defined and sickbeard_enabled and sickbeard_host != ansible_default_ipv4.address %}
+INSERT INTO "setting" VALUES(NULL,'sickbeard_host','{{ sickbeard_host }}');
+{% endif %}
+{% if sickbeard_enabled is defined and sickbeard_enabled %}
+INSERT INTO "setting" VALUES(NULL,'sickbeard_enable','on');
+INSERT INTO "setting" VALUES(NULL,'sickbeard_name','SickRage');
+INSERT INTO "setting" VALUES(NULL,'sickbeard_ssl','0');
+INSERT INTO "setting" VALUES(NULL,'sickbeard_apikey','{{ sickbeard_api_key }}');
+INSERT INTO "setting" VALUES(NULL,'sickbeard_port','8081');
+INSERT INTO "setting" VALUES(NULL,'sickbeard_basepath','/');
+{% endif %}
+{# Sabnzbd Configuration #}
+{% if sabnzbd_enabled is defined and sabnzbd_enabled and sabnzbd_host == ansible_default_ipv4.address and htpc_resolving == 'zeroconf' %}
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_host','{{ ansible_hostname }}.local');
+{% elif sabnzbd_enabled is defined and sabnzbd_enabled and sabnzbd_host == ansible_default_ipv4.address and htpc_resolving == 'hostname' %}
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_host','{{ ansible_hostname }}');
+{% elif sabnzbd_enabled is defined and sabnzbd_enabled and sabnzbd_host == ansible_default_ipv4.address and htpc_resolving == 'staticip' %}
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_host','{{ ansible_default_ipv4.address }}');
+{% elif sabnzbd_enabled is defined and sabnzbd_enabled and sabnzbd_host != ansible_default_ipv4.address %}
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_host','{{ sabnzbd_host }}');
+{% endif %}
+{% if sabnzbd_enabled is defined and sabnzbd_enabled %}
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_port','{{ sabnzbd_port }}');
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_apikey','{{ sab_apikey }}');
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_enable','on');
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_basepath','');
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_name','SABnzbd');
+INSERT INTO "setting" VALUES(NULL,'sabnzbd_ssl','0');
+{% endif %}
+INSERT INTO "setting" VALUES(NULL,'stats_limit_processes','');
+INSERT INTO "setting" VALUES(NULL,'stats_use_bars','0');
+INSERT INTO "setting" VALUES(NULL,'stats_psutil_enabled','on');
+INSERT INTO "setting" VALUES(NULL,'stats_scripts_enabled','0');
+INSERT INTO "setting" VALUES(NULL,'stats_enable','on');
+INSERT INTO "setting" VALUES(NULL,'stats_name','');
+INSERT INTO "setting" VALUES(NULL,'stats_use_whitelist','0');
+INSERT INTO "setting" VALUES(NULL,'stats_smart_enabled','0');
+INSERT INTO "setting" VALUES(NULL,'stats_ohm_enabled','0');
+INSERT INTO "setting" VALUES(NULL,'stats_ohm_ip','');
+INSERT INTO "setting" VALUES(NULL,'stats_filesystem','fusectl tmpfs rpc_pipefs cgroup nfsd fuse.gvfsd-fuse');
+INSERT INTO "setting" VALUES(NULL,'stats_ohm_port','');
+INSERT INTO "setting" VALUES(NULL,'stats_mountpoint','');
+CREATE TABLE newznab_indexers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    host TEXT,
+    apikey TEXT,
+    use_ssl TEXT,
+    apiurl TEXT
+);
+CREATE TABLE kodi_servers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    host TEXT,
+    port INT,
+    username TEXT,
+    password TEXT,
+    mac TEXT
+, starterport INT);
+{# Kodi Configuration #}
+{% if kodi_client_enabled is defined and kodi_client_enabled and kodi_host == ansible_default_ipv4.address and htpc_resolving == 'zeroconf' %}
+INSERT INTO "kodi_servers" VALUES(1,'{{ ansible_hostname }}','{{ ansible_hostname }}.local',8080,'kodi','','',NULL);
+{% elif kodi_client_enabled is defined and kodi_client_enabled and kodi_host == ansible_default_ipv4.address and htpc_resolving == 'hostname' %}
+INSERT INTO "kodi_servers" VALUES(1,'{{ ansible_hostname }}','{{ ansible_hostname }}',8080,'kodi','','',NULL);
+{% elif kodi_client_enabled is defined and kodi_client_enabled and kodi_host == ansible_default_ipv4.address and htpc_resolving == 'staticip' %}
+INSERT INTO "kodi_servers" VALUES(1,'{{ ansible_hostname }}','{{ ansible_default_ipv4.address }}',8080,'kodi','','',NULL);
+{% endif %}
+CREATE TABLE manageusers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT,
+    role TEXT
+);
+{# DELETE FROM sqlite_sequence;
+INSERT INTO "sqlite_sequence" VALUES('setting',61); #}
+INSERT INTO "sqlite_sequence" VALUES('kodi_servers',1);
+COMMIT;

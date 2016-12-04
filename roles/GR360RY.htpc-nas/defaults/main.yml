@@ -1,0 +1,8 @@
+---
+# defaults file for htpc-nas
+
+htpc_nas_enabled: yes
+
+htpc_nas_nfs: yes
+htpc_nas_cifs: yes
+htpc_nas_afp: yes

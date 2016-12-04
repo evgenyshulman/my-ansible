@@ -1,0 +1,87 @@
+---
+# tasks file for htpc-user
+# BLOCK: Create htpc group and user, enable sudo access
+- block:
+
+  - name: Create htpc group
+    group: name={{ htpc_user_group }} state=present
+
+  - name: Generate htpc user password
+    command: /usr/bin/openssl passwd -salt random_salt -1 {{ htpc_user_password }}
+    register: htpc_user_generated_password
+    changed_when: false
+
+  - name: Create htpc user
+    user: 
+      name={{ htpc_user_username }}
+      password={{ htpc_user_generated_password.stdout }}
+      group={{ htpc_user_group }}
+      update_password=on_create
+      state=present 
+      createhome=yes 
+      shell={{ htpc_user_shell }} 
+      groups=adm,cdrom,dip,plugdev
+      append=yes
+    register: htpc_user_verify_user
+
+  - name: Set Fact "htpc_user_uid"
+    set_fact: htpc_user_uid={{ htpc_user_verify_user.uid }}
+
+  - name: Set Fact "htpc_user_gid"
+    set_fact: htpc_user_gid={{ htpc_user_verify_user.group }}
+
+  - name: Enable sudo for htpc user
+    user: 
+      name={{ htpc_user_username }}
+      groups=sudo
+      append=yes
+    when: htpc_user_sudo_access
+  
+  tags:
+    - user
+
+# Create media folders
+- name: Create Media Folders
+  file: path={{ item }} state=directory owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0755 recurse=yes
+  with_items:
+    - "{{ htpc_media_path }}/{{ htpc_media_movies }}"
+    - "{{ htpc_media_path }}/{{ htpc_media_tv }}"
+    - "{{ htpc_media_path }}/{{ htpc_media_music }}"
+    - "{{ htpc_media_path }}/{{ htpc_media_pictures }}"
+  when: htpc_create_media_folders
+  tags:
+    - media
+
+- name: Create Downloads Folders
+  file: path={{ item }} state=directory owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0755 recurse=yes
+  with_items:
+    - "{{ htpc_downloads_complete }}"
+    - "{{ htpc_downloads_incomplete }}"
+
+- name: Create Processing Folders
+  file: path={{ item }} state=directory owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0755 recurse=yes
+  with_items:
+    - "{{ htpc_downloads_incomplete }}/process/"
+    - "{{ htpc_downloads_incomplete }}/process/movie"
+    - "{{ htpc_downloads_incomplete }}/process/tv"
+
+# BLOCK: Configure avahi and avahi alias
+- block:
+  
+  - name: Install Avahi packages
+    apt: name={{ item }} state=installed update_cache=yes cache_valid_time=3600
+    with_items:
+      - avahi-daemon
+      - libnss-mdns
+      - python-avahi
+      - python-pip
+      - git
+#
+#  - name: Install avahi-aliases service
+#    pip: name='git+http://github.com/GR360RY/avahi-aliases' editable=false
+#
+#  - name: Make sure avahi-aliases enabled and starts on boot
+#    service: name=avahi-aliases state=started enabled=yes
+
+  tags: avahi
+  when: htpc_zeroconf
