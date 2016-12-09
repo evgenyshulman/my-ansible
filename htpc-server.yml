@@ -3,6 +3,10 @@
 - hosts: htpc
   become: yes
 
+  vars:
+      ansible_ssh_pipelining: yes
+      htpc_user_username: htpc
+      local_home: /home/htpc
   pre_tasks:
 
     # Copy custom/htpc.yml.sample to custom/htpc.yml
@@ -12,6 +16,8 @@
       failed_when: false
 
   roles:
+    - { role: dotfiles, tags: ['r_dotfiles'], become: yes, become_user: htpc}
+    - { role: dotfiles, tags: ['r_dotfiles_shulman'], become: yes, become_user: shulman, local_home:  /home/shulman}
     - { role: htpc-user }
     - { role: GR360RY.kodi-client, when: kodi_client_enabled }
     - { role: GR360RY.kodi-mysql, when: kodi_mysql_enabled }
