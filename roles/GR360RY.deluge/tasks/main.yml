@@ -18,11 +18,11 @@
     - "{{ deluged_path }}/config"
     - "{{ deluged_path }}/config/state"
 
-- name: Update Deluge Daemon Upstart Job
-  template: src=deluged.conf.j2 dest=/etc/init/deluged.conf owner=root group=root mode=0755
+- name: Update Deluge Daemon Systemd Job
+  template: src=deluged.service.j2 dest=/etc/systemd/system/deluged.service owner=root group=root mode=0755
 
-- name: Update Deluge Web Upstart Job
-  template: src=deluge-web.conf.j2 dest=/etc/init/deluge-web.conf owner=root group=root mode=0755
+- name: Update Deluge Web Systemd Job
+  template: src=deluge-web.service.j2 dest=/etc/systemd/system/deluge-web.service owner=root group=root mode=0755
 
 - name: Create Deluge Incomplete downloads folders
   file: path={{ item }} state=directory owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0775 recurse=yes
@@ -61,6 +61,9 @@
 - name: Reapply Deluge Web web.conf
   template: src=web.conf.j2 dest={{ deluged_path }}/config/web.conf owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0640
   register: deluged_web_update.changed
+
+- name: Enable Deluge Daemon is running and enabled on boot
+  service: name=deluged enabled=yes
 
 - name: Make sure Deluge Daemon is running and enabled on boot
   service: name=deluged state=started enabled=yes

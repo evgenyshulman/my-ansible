@@ -19,8 +19,8 @@
 - name: Make sure HTPC-Manager directory has correct ownership
   file: path={{ htpc_manager_path }} owner={{ htpc_user_username }} group={{ htpc_user_group }} recurse=yes
 
-- name: Update HTPC-Manager init.d script
-  template: src=init.{{ ansible_os_family }} dest=/etc/init.d/{{ htpc_manger_init_script }} owner=root group=root mode=0755
+- name: Update HTPC-Manager systemd script
+  template: src=etc_systemd_htpc_manager.service.j2 dest=/etc/systemd/system/htpc-manager.service owner=root group=root mode=0755
 
 - name: Make sure HTPC-Manager starts on boot
   service: name={{ htpc_manger_init_script }} state=started  pattern='/usr/bin/python Htpc.py' enabled=yes

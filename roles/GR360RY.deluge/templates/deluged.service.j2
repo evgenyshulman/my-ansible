@@ -1,0 +1,19 @@
+[Unit]
+Description=Deluge Bittorrent Client Daemon
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ htpc_user_username }}
+Group={{ htpc_user_group }}
+UMask=002
+
+ExecStart=/usr/bin/deluged -d  -c {{ deluged_path }}/config -l {{ deluged_path }}/deluged.log -L warning
+
+Restart=on-failure
+
+# Configures the time to wait before service is stopped forcefully.
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

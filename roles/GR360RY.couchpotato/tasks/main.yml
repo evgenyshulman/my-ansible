@@ -15,8 +15,8 @@
   become: yes
   become_user: "{{ htpc_user_username }}"
 
-- name: Update Couchpotato init.d script
-  template: src=init.{{ ansible_os_family }} dest=/etc/init.d/{{ couchpotato_init_script }} owner=root group=root mode=0755
+- name: Update Couchpotato systemd script
+  template: src=etc_systmed_couchpotato.service.j2 dest=/etc/systemd/system/couchpotato.service owner=root group=root mode=0755
 
 - name: Update Couchpotato Daemon configuration
   template: src=etc_default_couchpotato dest=/etc/default/couchpotato owner=root group=root mode=0644

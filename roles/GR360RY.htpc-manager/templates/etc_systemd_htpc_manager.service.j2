@@ -1,0 +1,15 @@
+[Unit]
+Description=HTPC Manager Daemon
+After=network.target
+
+[Service]
+User={{ htpc_user_username }}
+Group={{ htpc_user_group }}
+Type=forking
+ExecStart=/usr/bin/python {{ htpc_manager_path }}/Htpc.py --daemon --datadir {{ htpc_manager_path }}/userdata --pid {{ htpc_manager_path }}/userdata/htpcmanager.pid
+PIDFile={{ htpc_manager_path }}/userdata/htpcmanager.pid
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

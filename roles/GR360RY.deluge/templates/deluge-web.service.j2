@@ -1,0 +1,16 @@
+Description=Deluge Bittorrent Client Web Interface
+After=network-online.target
+
+[Service]
+Type=simple
+
+User={{ htpc_user_username }}
+Group={{ htpc_user_group }}
+UMask=027
+
+ExecStart=/usr/bin/deluge-web -c {{ deluged_path }}/config -l {{ deluged_path }}/deluge-web.log -L warning
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

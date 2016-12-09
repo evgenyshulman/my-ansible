@@ -1,0 +1,12 @@
+[Unit]
+Description=CouchPotato application instance
+After=network.target
+
+[Service]
+ExecStart=/opt/couchpotato/CouchPotato.py
+Type=simple
+User={{ htpc_user_username }}
+Group={{ htpc_user_group }}
+
+[Install]
+WantedBy=multi-user.target

@@ -16,8 +16,8 @@
   become: yes
   become_user: "{{ htpc_user_username }}"
 
-- name: Update SickRage Upstart script
-  template: src=etc_init_sickrage.conf.j2 dest=/etc/init/sickrage.conf owner=root group=root
+- name: Update SickRage Systemd script
+  template: src=etc_systemd_sickrage.service.j2 dest=/etc/systemd/system/sickrage.service owner=root group=root
 
 - name: Update SickBeard Daemon Configuration
   template: src=etc_default_sickrage.j2 dest=/etc/default/sickrage owner=root group=root mode=0644
