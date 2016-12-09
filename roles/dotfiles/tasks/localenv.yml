@@ -1,0 +1,7 @@
+
+
+ - name: Create localenv
+   file: path="{{localenv_file}}"   state=touch
+
+ - name: jenv init
+   action: lineinfile dest="{{localenv_file}}" line="eval \"$(jenv init -)\""

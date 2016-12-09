@@ -1,0 +1,32 @@
+
+- name: Checkout the HomeShick Git
+  git:  >
+     repo=git://github.com/andsens/homeshick.git dest="{{local_home}}/.homesick/repos/homeshick"
+     version=master
+     accept_hostkey=True
+
+#  - name: Update bashrc to have homeshick initialization
+#    lineinfile: dest=/{{local_home}}/.bashrc line="source $HOME/.homesick/repos/homeshick/homeshick.sh" regexp='homeshick'
+
+- name: Clone prezto repo
+  git: repo=git://github.com/sorin-ionescu/prezto.git dest="{{local_home}}/.homesick/repos/prezto"
+  #version=28e956691ca727ab4
+
+- name: setting up prezto symlink
+  file: src="{{local_home}}/.homesick/repos/prezto"
+        dest="{{local_home}}/.zprezto"
+        state=link
+
+- name: Clone dotfile repo
+  git: repo="{{dot_files_repo}}" update=False dest="{{local_home}}/.homesick/repos/dotfiles"
+
+- name: Link out dotfiles
+  command: "{{local_home}}/.homesick/repos/homeshick/bin/homeshick link dotfiles -f -q"
+
+#  DO NOT RUN IT ON MAC EVER!  this command delete all user properties, except shell!!!
+#- name: Set zsh as default shell
+#  user: name="{{ ansible_user_id }}" shell=/bin/zsh
+#  sudo: yes
+
+
+- include: localenv.yml

@@ -1,0 +1,4 @@
+
+
+dot_files_repo: git://github.com/evgenyshulman/dotfiles.git
+localenv_file: "{{local_home}}/.localenv"
