@@ -85,3 +85,6 @@
 
   tags: avahi
   when: htpc_zeroconf
+
+
+- include: user-login.yml

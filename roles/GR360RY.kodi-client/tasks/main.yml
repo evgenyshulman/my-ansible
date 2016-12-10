@@ -19,36 +19,6 @@
 - name: Update advancedsettings.xml
   template: src=advancedsettings.xml.j2 dest=~{{ htpc_user_username }}/.kodi/userdata/advancedsettings.xml owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0644
 
-- name: Setup Autologin for HTPC User
-  template: src=etc_lightdm_lightdm.conf.j2 dest=/etc/lightdm/lightdm.conf owner=root group=root mode=0664
-
-- name: Disable Keyboard Shortcut Overlay on first boot
-  copy: src=overlay.sh dest=/etc/profile.d/overlay.sh owner=root group=root mode=0644
-
-- name: Upload user_xsession.py script
-  copy: src=user_xsession.py dest=/usr/local/bin/user_xsession.py owner=root group=root mode=0744
-
-- name: Get Xsession
-  command: /usr/local/bin/user_xsession.py --user-name {{ htpc_user_username }} get
-  register: xsession_validate
-  changed_when: false
-
-- name: Set Xsession
-  command: /usr/local/bin/user_xsession.py --user-name {{ htpc_user_username }} set {{ kodi_xsession }}
-  changed_when: xsession_validate.stdout != kodi_xsession
-
-- name: Make sure ~/.config/autostart directory is available
-  file: state=directory dest={{ item }} owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0700
-  with_items:
-    - "~{{ htpc_user_username }}/.config/"
-    - "~{{ htpc_user_username }}/.config/autostart/"
-
 - name: Startup Kodi automatically on login in full screen mode
   template: src=kodi.desktop.j2 dest=~{{ htpc_user_username }}/.config/autostart/kodi.desktop owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0664
 
-- name: Add script to disable screensaver
-  copy: src=disable_screensaver dest=/usr/bin/disable_screensaver owner=root group=root mode=0755
-
-- name: Disable screensaver both in Unity and Xserver on HTPC user login
-  copy: src=disable_screensaver.desktop dest=~{{ htpc_user_username }}/.config/autostart/disable_screensaver.desktop owner={{ htpc_user_username }} group={{ htpc_user_group }} mode=0664
-  
