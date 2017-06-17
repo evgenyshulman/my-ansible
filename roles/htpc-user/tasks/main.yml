@@ -76,12 +76,16 @@
       - python-avahi
       - python-pip
       - git
-#
-#  - name: Install avahi-aliases service
-#    pip: name='git+http://github.com/GR360RY/avahi-aliases' editable=false
-#
-#  - name: Make sure avahi-aliases enabled and starts on boot
-#    service: name=avahi-aliases state=started enabled=yes
+
+  - name: Install avahi-aliases service
+    pip: name='git+http://github.com/GR360RY/avahi-aliases' editable=false
+    tags:
+      -avahi-aliases
+
+  - name: Make sure avahi-aliases enabled and starts on boot
+    service: name=avahi-aliases state=started enabled=yes
+    tags:
+      -avahi-aliases
 
   tags: avahi
   when: htpc_zeroconf

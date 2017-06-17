@@ -1,0 +1,113 @@
+version: '2'
+services:
+    nginx-proxy:
+        image: jwilder/nginx-proxy
+        env_file: ./envs/linuxserver.env
+        environment:
+          - DEFAULT_HOST=dashboard.box.local
+        ports:
+           - "80:80"
+        volumes:
+           - /var/run/docker.sock:/tmp/docker.sock:ro
+
+    dashboard:
+        image: chimpchimp/manage-this-node
+        ports:
+            - 3000:3000
+        volumes:
+            - /opt/htpc-server/dashboard:/config
+        restart: always
+        env_file: ./envs/linuxserver.env
+        environment:
+            - VIRTUAL_HOST=dashboard.${HTPC_DOMAIN}
+
+
+    couchpotato:
+        image: linuxserver/couchpotato
+        # network_mode: "$HTPC_SERVER_NETWORK"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HTPC_SERVER_CONFIG}/couchpotato:/config
+            - ${HTPC_PATH_DOWNLOADS}/complete:/downloads
+            - ${HTPC_PATH_MOVIES}:/movies
+        ports:
+            - 5050:5050
+        links:
+            - plex
+            - deluge
+        restart: always
+        env_file: ./envs/linuxserver.env
+        environment:
+            - VIRTUAL_HOST=couchpotato.${HTPC_DOMAIN}
+
+
+    plex:
+        image: linuxserver/plex
+        # network_mode: "$HTPC_SERVER_NETWORK"
+        ports:
+            - 32400:32400
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HTPC_SERVER_CONFIG}/plexmediaserver:/config
+            - ${HTPC_PATH_MOVIES}:/data/movies
+        restart: always
+        env_file: ./envs/linuxserver.env
+        environment:
+            - VIRTUAL_PORT=32400
+            - VIRTUAL_HOST=plex.${HTPC_DOMAIN}
+            - VERSION=latest
+
+    deluge:
+        image: linuxserver/deluge
+        # network_mode: "$HTPC_SERVER_NETWORK"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HTPC_PATH_DOWNLOADS}:/downloads
+            - ${HTPC_SERVER_CONFIG}/deluge:/config
+        restart: always
+        env_file: ./envs/linuxserver.env
+        environment:
+            - VIRTUAL_PORT=8112
+            - VIRTUAL_HOST=deluge.${HTPC_DOMAIN}
+
+    sickrage:
+        image: linuxserver/sickrage
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HTPC_PATH_DOWNLOADS}:/downloads
+            - ${HTPC_PATH_TV_SHOWS}:/tv
+            - ${HTPC_SERVER_CONFIG}/sickrage:/config
+        links:
+            - plex
+            - deluge
+        restart: always
+        env_file: ./envs/linuxserver.env
+        environment:
+            - VIRTUAL_PORT=8081
+            - VIRTUAL_HOST=sickrage.${HTPC_DOMAIN}
+
+
+    shairport:
+        build: shairport
+        network_mode: host
+        devices:
+            - /dev/snd:/dev/snd
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HTPC_SERVER_CONFIG}/shairport:/config
+        restart: always
+        env_file: ./envs/linuxserver.env
+        environment:
+            - AIRPLAY_NAME=box
+
+#    hamachi:
+#        image: gfjardim/hamachi
+#        container_name: hamachi
+#        network_mode: "host"
+#        volumes:
+#            - /etc/localtime:/etc/localtime:ro
+#            - ${HTPC_SERVER_CONFIG}/hamachi:/config
+#        restart: always
+#        environment:
+#            - ACCOUNT="myemail@gmail.com"
+#        privileged: true

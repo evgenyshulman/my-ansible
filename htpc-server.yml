@@ -19,7 +19,7 @@
   roles:
     - { role: dotfiles, tags: ['r_dotfiles'], become: yes, become_user: htpc}
     - { role: dotfiles, tags: ['r_dotfiles_shulman'], become: yes, become_user: shulman, local_home:  /home/shulman}
-    - { role: htpc-user }
+    - { role: htpc-user, tags: ['r_user'], }
     - { role: GR360RY.kodi-client, when: kodi_client_enabled }
     - { role: GR360RY.kodi-mysql, when: kodi_mysql_enabled }
     - { role: GR360RY.htpc-nas, when: htpc_nas_enabled }
