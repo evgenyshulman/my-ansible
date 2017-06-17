@@ -87,18 +87,18 @@ services:
             - VIRTUAL_HOST=sickrage.${HTPC_DOMAIN}
 
 
-    shairport:
-        build: shairport
-        network_mode: host
-        devices:
-            - /dev/snd:/dev/snd
-        volumes:
-            - /etc/localtime:/etc/localtime:ro
-            - ${HTPC_SERVER_CONFIG}/shairport:/config
-        restart: always
-        env_file: ./envs/linuxserver.env
-        environment:
-            - AIRPLAY_NAME=box
+#    shairport:
+#        build: shairport
+#        network_mode: host
+#        devices:
+#            - /dev/snd:/dev/snd
+#        volumes:
+#            - /etc/localtime:/etc/localtime:ro
+#            - ${HTPC_SERVER_CONFIG}/shairport:/config
+#        restart: always
+#        env_file: ./envs/linuxserver.env
+#        environment:
+#            - AIRPLAY_NAME=box
 
 #    hamachi:
 #        image: gfjardim/hamachi
